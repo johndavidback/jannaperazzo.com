@@ -37,7 +37,7 @@
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
-            <!-- <li class="active"><a href="#">Home</a></li> -->
+            <li><a href="#" data-toggle="modal" data-target="#map-modal">7835 Cooper Rd, Montgomery 45242</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <li><a href="mailto:janna.perazzo@gmail.com">Email Janna</a></li>
@@ -188,11 +188,67 @@
 
     </div> <!-- /container -->
 
+    <div class="modal fade" id="map-modal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Map to Janna</h4>
+          </div>
+          <div class="modal-body">
+          <address>
+          7835 Cooper Rd<br>
+          Montgomery, OH 45242
+          </address>
+            <div id="map_canvas"></div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-    <script src="../../dist/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+
+    <script>
+      var initialize_map = function() {
+        var map_canvas = document.getElementById('map_canvas');
+
+        // Let's try to center this thing around good ol' Janna's address.
+        geocoder = new google.maps.Geocoder();
+        geocoder.geocode({
+          'address': '7835 Cooper Rd, 45242'
+        }, function(results, status) {
+          if(status == google.maps.GeocoderStatus.OK) {
+            var options = {
+              zoom: 12,
+              center: results[0].geometry.location,
+              mapTypeId: google.maps.MapTypeId.ROADMAP
+            }
+            var map = new google.maps.Map(map_canvas, options);
+
+            var marker = new google.maps.Marker({
+              map: map,
+              position: results[0].geometry.location
+            });
+          } else {
+            var map = new google.maps.Map(map_canvas);
+          }
+        });
+      };
+      
+      $('#map-modal').on('shown.bs.modal', function(e) {
+        console.log('here');
+        initialize_map();
+      });
+      
+    </script>
   </body>
 </html>
